@@ -1,11 +1,10 @@
-#Calculo da corte
-
-#IBM
-#Parâmetros
+##Parâmetros <- editar essa parte
 total_time <- 6000 #Iterações
 N <- 500 # Tamanho da população 
 C0 <- 0.9 # Densidade inicial de C,os demais sao desertores
 repetitions<- 10 # Numero de repetições
+
+##Estruturação dos dados
 individuals_data=data.frame(
   name=as.numeric(),
   phenotype=as.character(), 
@@ -18,6 +17,8 @@ output_data=data.frame(
   Traitos=as.numeric()
 )
 individuals_data[1:N,]=NA
+
+##IBM
 cont_line=0
 for (rep in 1:repetitions ){
   C=round(N*C0)
@@ -29,29 +30,27 @@ for (rep in 1:repetitions ){
   cont_line=cont_line+1
   output_data[cont_line,]=c(rep,0,C,N-C,0)
   for(t in 1:total_time){
-    # female choose one individual to define the coupling
+    #Femea escolhe um indivíduo 
     ind=sample(c(1:N),1)
-    #check the group and alpha
+    #Checar grupo e dominante (alfa)
     cond=individuals_data$group==individuals_data$group[ind]&individuals_data$phenotype=="NC"
     ialpha=individuals_data$name[cond] 
-    # one individual will die
+    #um indivíduo morre
     ind_die=sample(c(1:N),1)
-    if(length(ialpha)>0){ # the dominant is "NC"
-      # NC is born
-      #new group
+    if(length(ialpha)>0){ # Dominante é "NC"
+      # novo NC nasce <- novo grupo 
       total_groups=total_groups+1
       individuals_data[ind_die,]=c(ind_die, "NC",total_groups)
     }else{
-      # C is born
-      #sample a group
+      # novo C nasce <- sorteia um grupo
       id_group=sample(individuals_data$group,1)
       individuals_data[ind_die,]=c(ind_die, "C",id_group)
     }
-    #generating the output
+    #gerar output
     condD=individuals_data$phenotype=="NC"
     D=length(individuals_data$phenotype[condD])
     if(D>0){
-      # verify how many are traitors
+      # verificar quantos são Traidores
       groups_D=individuals_data$group[condD]
       cond_C=individuals_data$phenotype=="C"
       cond_group=individuals_data$group%in%groups_D
@@ -64,15 +63,17 @@ for (rep in 1:repetitions ){
     output_data[cont_line,]=c(rep,t,C,D,T)
   }
 }
+
 #View(output_data)
 plot(output_data$iteration,output_data$Cooperators, ylim=c(0,N))
 points(output_data$iteration,output_data$Defectors, col=2)
 points(output_data$iteration,output_data$Traitos, col=3)
-#######################
-###  Master equation###
 
-write.csv(output_data, file="IBM09_N500_t6000_rep10_NULO")
+write.csv(output_data, file=paste("IBM", C0, "_N",N, "_t", total_time, "_rep", repetitions, "_NULO.csv"))
 
+
+
+##Equações Mestras
 C=round(N*C0)
 D=N-C
 Tv=0
