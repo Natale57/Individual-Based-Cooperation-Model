@@ -5,6 +5,7 @@ Este repositório é um material suplementar do texto "Uma abordagem geométrica
 * IBM
 * Equações Mestras
 
+Para a repetibilidade de aleatorizações inclua o comando set.seed(x) no começo do código, onde x é uma variável númerica.
 ## Parâmetros
 Esta é a única parte do código que deve ser alterada para obter o mesmo sistema de referência. Nela estão os parâmetros utilizados no modelo.
 
